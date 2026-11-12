@@ -1,0 +1,20 @@
+# End-to-end browser test (optional): needs shinytest2 and Chrome.
+test_that("a spin in the browser changes the balance", {
+  skip_on_cran()
+  skip_if_not_installed("shinytest2")
+  skip_if_not(nzchar(Sys.getenv("FC_E2E")), "set FC_E2E=1 to run browser tests")
+  app <- shinytest2::AppDriver$new(run_app(storage = "memory"), name = "spin", height = 900, width = 1400)
+  on.exit(app$stop(), add = TRUE)
+  app$wait_for_idle()
+  # first visit: choose a player name
+  app$set_inputs(`profile-name` = "E2E Tester")
+  app$click("profile-ok")
+  app$wait_for_idle(1000)
+  expect_equal(app$get_js("document.getElementById('hud-name-txt').textContent"), "E2E Tester")
+  app$run_js("document.querySelector('[data-value=\"classic\"]').click();")
+  app$set_inputs(`classic-open` = "vegasstrip", allow_no_input_binding_ = TRUE, priority_ = "event")
+  app$click("classic-vegasstrip-spin")
+  app$wait_for_idle(2000)
+  coins <- app$get_js("document.getElementById('hud-coins').textContent")
+  expect_false(identical(coins, "1,000,000"))
+})

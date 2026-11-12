@@ -1,0 +1,34 @@
+Package: fortuneCougar
+Title: fortuneCougar: A Social Casino Built as a Shiny Package
+Version: 0.3.0
+Authors@R: 
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+Description: A modular R Shiny social-casino app (play money only): 22 feature
+    slot machines (classic, mythological and animal 3D themes), Blackjack
+    (Classic, European, Switch, Perfect Pairs), Video Poker (Jacks or Better,
+    Deuces Wild, Bonus, Joker Poker) and Roulette (European, American, French,
+    Multi-Wheel), plus a metagame (card album with Lucky Cards, Wheel of Fun,
+    Star Market, Monsterpedia, loyalty tiers and Daily Dash missions) sharing
+    one reactive player session. Progress and the linked jackpots persist in an
+    SQLite database; the interface is available in English and Brazilian
+    Portuguese.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports:
+    bslib (>= 0.6.0),
+    DBI,
+    htmltools,
+    jsonlite,
+    RSQLite,
+    shiny (>= 1.8.0),
+    stats,
+    tools,
+    utils
+Suggests:
+    pkgload,
+    shinytest2,
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1

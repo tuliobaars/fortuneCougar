@@ -1,0 +1,58 @@
+# todo.md - House of Fun Clone Implementation Checklist
+
+*Note: Playtika regularly cycles a rotating roster of over 400 slots. This checklist covers the core franchise engines, major documented Vegas/3D/Fairy Tale slots, all metagame side-features, and expanded table game engines required for a 1:1 clone.*
+
+## Meta & Side Games
+- [ ] **HoF Album (Like a Pro)** - Card collection mechanic to complete albums for massive coin payouts.
+- [ ] **Wheel of Fun** - Daily/hourly login wheel for free coins and multiplier bonuses.
+- [ ] **Star Market** - Trading system for duplicate cards to buy fantastic bonuses and exclusive avatars.
+- [ ] **Lucky Cards Mini Game** - Triggered upon pulling specific cards for extra randomized prizes.
+- [ ] **Monsterpedia Challenges** - Gamified leveling map linked to specific monster-themed slot releases.
+- [ ] **Playtika Rewards System** - Cross-game loyalty point tracking and VIP tier progression.
+- [ ] **Daily Dash / Exclusive Challenges** - Daily progressing mission passes with daily, weekly, and monthly rewards.
+
+## Classic & Vegas Slots
+- [ ] **Classic 777 Cash** - Traditional 3-reel stepper featuring high volatility, classic fruit symbols, and multiplier wilds.
+- [ ] **Bank of Jackpots** - High-roller Vegas style 5-reel game with a 4-tier linked progressive jackpot.
+- [ ] **Vegas Strip** - Neon-drenched 5-reel slot focusing on scatter pays and free spin retriggers.
+- [ ] **Classic Ruby** - Retro aesthetic with stacked symbols and a nudge feature to complete paylines.
+- [ ] **City of Queens** - Luxury-themed slot offering a pick-and-win bonus game alongside standard reels.
+- [ ] **Rapid Fire Jackpot Engines** - Specialized fast-play slots where quick sequential spins increase jackpot odds.
+
+## Mythological & Adventure Slots
+- [ ] **Purrymid Prince** - Egyptian-themed 5-reel slot featuring expanding cat-pharaoh wilds and a tomb-raiding bonus round.
+- [ ] **Stone Gold** - Medusa-themed game where winning symbols turn to stone and lock in place for respins.
+- [ ] **Blackbeards' Riches** - Pirate adventure slot with cascading reels and a map-progression bonus game.
+- [ ] **Giant's Treasure** - Jack and the Beanstalk inspired climbing mechanic where wilds grow vertically across the reels.
+- [ ] **Cinderella** - Fairy Tale engine game featuring a midnight countdown mechanic that transforms standard symbols into carriage wilds.
+- [ ] **Mighty Phoenix** - Asian-themed 243-ways-to-win slot featuring a hold-and-spin jackpot feature.
+- [ ] **Dragon's Fury** - High-volatility Asian-themed slot featuring randomly triggered expanding dragon wilds that cover entire reels.
+- [ ] **Mermaid's Pearl** - Underwater adventure with a collection mechanic; gather 100 pearls to trigger the Grand Jackpot spin.
+- [ ] **Wild West Bounty** - Cowboy-themed slot with a dual-screen shooting gallery mini-game for instant coin prizes.
+
+## Animal & Fantasy 3D Slots
+- [ ] **3 Tigers** - High-variance animal slot where players choose their volatility level during the free spins feature.
+- [ ] **Kitty Gems** - Cute feline theme with multiplying diamond wilds and frequent low-tier payouts.
+- [ ] **Gummy King 2** - Candy-themed cascading reels slot with progressive multipliers on consecutive wins.
+- [ ] **Frankenstein Rising** - Horror-themed slot with reviving wilds and a laboratory mini-game tied to the Monsterpedia.
+- [ ] **Vile Vixens** - Monster-themed slot featuring sticky wilds that remain on the board for up to 3 subsequent spins.
+- [ ] **Dark Jaguar** - Jungle night theme with mystery stacked symbols that reveal identical matching symbols after the spin.
+- [ ] **Vampire's Kiss** - Gothic romance 3D slot featuring a "blood moon" respin mechanic and transferring wilds.
+
+## Blackjack (Table Games Expansion)
+- [ ] **Classic Blackjack** - Standard 6-deck Vegas rules, dealer stands on soft 17, double down on any two cards.
+- [ ] **European Blackjack** - Dealer does not receive a hole card until the player finishes their hand; no peeking for blackjack.
+- [ ] **Blackjack Switch** - Player plays two hands simultaneously and can switch the top cards between hands to optimize their odds.
+- [ ] **Perfect Pairs Blackjack** - Classic rules with a lucrative side bet that pays out if the player's initial two cards form a pair (mixed, colored, or perfect).
+
+## Video Poker (Table Games Expansion)
+- [ ] **Jacks or Better** - The foundational video poker experience; payouts begin at a pair of Jacks.
+- [ ] **Deuces Wild** - Fast-paced variant where all "2" cards act as wilds, substituting for any other card to build winning hands.
+- [ ] **Bonus Poker** - Similar to Jacks or Better but offers premium bonus payouts for specific four-of-a-kind hands (like four Aces).
+- [ ] **Joker Poker** - Played with a 53-card deck including one Joker that acts as a wild; requires Kings or Better to qualify for a win.
+
+## Roulette (Table Games Expansion)
+- [ ] **European Roulette** - Traditional single-zero (0) wheel offering a lower house edge and standard inside/outside betting.
+- [ ] **American Roulette** - Features both a single zero (0) and double zero (00) wheel with an adjusted betting layout.
+- [ ] **French Roulette** - Single-zero wheel featuring the "La Partage" rule, where players receive half their even-money bets back if the ball lands on zero.
+- [ ] **Multi-Wheel Roulette** - Allows the player to place one set of bets that are active across up to 6 simultaneously spinning European roulette wheels.

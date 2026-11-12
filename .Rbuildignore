@@ -1,0 +1,14 @@
+^renv$
+^renv\.lock$
+^fortuneCougar\.Rproj$
+^\.Rproj\.user$
+^app\.R$
+^R/_disable_autoload\.R$
+^tools$
+^todo\.Rmd$
+^README\.md$
+^\.RData$
+^\.Rhistory$
+^\.Rprofile$
+^\.DS_Store$
+^LICENSE\.md$
