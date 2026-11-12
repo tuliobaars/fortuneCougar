@@ -25,6 +25,7 @@
 # storage = "browser". Shared-database features (leaderboard, community
 # clusters, jackpots shared between players) need a real R server, see DEPLOY.md.
 # ---------------------------------------------------------------------------
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 
 args <- commandArgs(trailingOnly = TRUE)
 out <- if (length(args) && !startsWith(args[1], "--")) args[1] else "_site"
