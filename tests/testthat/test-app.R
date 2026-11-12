@@ -19,6 +19,13 @@ test_that("the UI builds in English and in Brazilian Portuguese", {
   expect_false(grepl("Table Games", pt, fixed = TRUE))
 })
 
+test_that("extra stylesheets (the browser build's precompiled theme) load before casino.css", {
+  withr::local_options(fortuneCougar.extra_css = "fc-assets/fc-theme.css")
+  html <- page_html(fc_app_ui(NULL))
+  expect_match(html, "fc-assets/fc-theme.css", fixed = TRUE)
+  expect_lt(regexpr("fc-theme.css", html, fixed = TRUE), regexpr("casino.css", html, fixed = TRUE))
+})
+
 test_that("run_app(lang = 'pt_BR') sets the default language", {
   withr::local_options(fortuneCougar.lang = "pt_BR")
   expect_match(page_html(fc_app_ui(NULL)), "Mesa", fixed = TRUE)
@@ -61,6 +68,8 @@ test_that("a new player must choose a valid name before anything is saved", {
     expect_null(store$load_player("player-newcomer-01"))              # unnamed: not saved
     session$setInputs(`profile-name` = "x", `profile-ok` = 1)          # too short
     expect_equal(player$name(), "")
+    # the error is shown inside the open dialog (re-showing a modal locks page scrolling)
+    expect_match(as.character(output[["profile-error"]]$html), "2-20", fixed = TRUE)
     expect_null(store$load_player("player-newcomer-01"))
     session$setInputs(`profile-name` = "  Alice   Cooper ", `profile-ok` = 2)
     expect_equal(player$name(), "Alice Cooper")
@@ -121,5 +130,37 @@ test_that("switching player saves the current one and starts a fresh profile", {
     session$setInputs(`profile-name` = "dora", `profile-ok` = 3)
     expect_equal(player$id(), "player-switcher-1")
     expect_equal(player$coins(), START_COINS + 5000)
+  })
+})
+
+test_that("demo mode adds the demo players and lets a script pin the randomness", {
+  withr::local_options(fortuneCougar.storage = "memory", fortuneCougar.demo = TRUE)
+  linked_jackpots_reset()
+  on.exit(linked_jackpots_reset(), add = TRUE)
+  shiny::testServer(fc_app_server, {
+    expect_equal(store$find_player_by_name("lucky cougar"), FC_DEMO_PLAYER)
+    expect_gte(nrow(store$all_features(100L)), 30)                      # community for the k-means
+    session$setInputs(fc_hello = list(id = "demo-browser-0001", saved = ""))
+    session$setInputs(`profile-name` = "Lucky Cougar", `profile-ok` = 1)
+    expect_equal(player$id(), FC_DEMO_PLAYER)
+    expect_equal(shiny::isolate(player$rv$level), 40L)
+    expect_equal(shiny::isolate(player$rv$track$n), 420)
+    session$setInputs(`__seed` = 527)
+    x <- stats::runif(1)
+    set.seed(527)
+    expect_equal(x, stats::runif(1))
+  })
+})
+
+test_that("outside demo mode there are no demo players and `__seed` does nothing", {
+  withr::local_options(fortuneCougar.storage = "memory", fortuneCougar.demo = FALSE)
+  linked_jackpots_reset()
+  on.exit(linked_jackpots_reset(), add = TRUE)
+  shiny::testServer(fc_app_server, {
+    expect_null(store$find_player_by_name("Lucky Cougar"))
+    set.seed(1); session$setInputs(`__seed` = 527)
+    x <- stats::runif(1)
+    set.seed(1); y <- stats::runif(1)
+    expect_equal(x, y)
   })
 })

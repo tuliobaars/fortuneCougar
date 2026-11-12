@@ -1,0 +1,9 @@
+# Render Blueprint (free web service, real R server from the Dockerfile).
+# Render > New > Blueprint > pick this repository. See DEPLOY.md.
+services:
+  - type: web
+    name: fortunecougar
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /

@@ -170,6 +170,20 @@ test_that("roulette: bets, spin and settlement", {
   })
 })
 
+test_that("wheel of fun: the prize is revealed when the wheel stops", {
+  set.seed(16)
+  player <- new_test_player()
+  shiny::testServer(wheel_server, args = list(player = player), {
+    c0 <- shiny::isolate(player$rv$coins)
+    session$setInputs(spin_hourly = 1)
+    expect_gt(shiny::isolate(player$rv$coins), c0)
+    html <- as.character(output$hourly_btn$html)
+    expect_match(html, "wheel-won", fixed = TRUE)
+    expect_match(html, "animation-delay", fixed = TRUE)        # hidden while the wheel turns
+    expect_match(as.character(output$hourly_wheel$html), "data-spin-to", fixed = TRUE)
+  })
+})
+
 test_that("meta: Daily Dash claims pay once", {
   player <- new_test_player()
   b <- shiny::isolate(player$dash_board())

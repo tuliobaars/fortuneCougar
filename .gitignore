@@ -2,3 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
+_site/
+.DS_Store
+docs.zip
+docs/*
+media/*

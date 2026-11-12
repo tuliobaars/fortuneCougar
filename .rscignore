@@ -1,0 +1,13 @@
+media
+tests
+tools
+man
+_site
+Dockerfile
+.dockerignore
+.github
+todo.Rmd
+render.yaml
+.gitlab-ci.yml
+docs
+public

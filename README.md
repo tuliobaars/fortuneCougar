@@ -5,6 +5,10 @@ slot machines, 12 table games and a full metagame, all sharing one reactive
 player session. Progress and the linked jackpots persist in **SQLite**, and the
 whole interface is available in **English and Brazilian Portuguese**.
 
+**Promo videos:** [`media/fortuneCougar_launch_60s.mp4`](media/fortuneCougar_launch_60s.mp4) (59.5 s) and
+[`media/fortuneCougar_teaser_30s.mp4`](media/fortuneCougar_teaser_30s.mp4) (30 s), 1080p60, made with
+DirectoR from real interactions with the app (storyboards in `media/director/`).
+
 ## Running it
 
 ```r
@@ -22,6 +26,12 @@ On the first visit the app asks for a **player name**; coins, cards and
 statistics are saved under it, and typing the same name later (on any browser)
 continues that profile. Click the name in the header for **My Stats**.
 
+**Deploy for free:** GitHub Pages runs the whole casino in the browser (Shinylive / webR); a
+workflow is included. Build the site with `tools/build_site.R` (never `shinylive::export(".")` on the
+repository). [DEPLOY.md](DEPLOY.md) covers ten free options: five static hosts (GitHub Pages,
+Netlify, Cloudflare Pages, GitLab Pages, Vercel) and five R servers (Posit Connect Cloud,
+shinyapps.io, Render, Google Cloud Run, Hugging Face Spaces).
+
 Keyboard: **Space** spins the visible machine, **T** toggles turbo animations.
 The **EN / PT** button in the header switches language (remembered per
 browser; `?lang=pt_BR` in the URL works too).
@@ -31,6 +41,7 @@ browser; `?lang=pt_BR` in the URL works too).
 | `fortuneCougar.lang` / `lang` | `"en"`, `"pt_BR"` | `"en"` |
 | `fortuneCougar.storage` / `storage` | `"sqlite"`, `"browser"`, `"memory"` | `"sqlite"` if RSQLite is installed, else `"browser"` |
 | `fortuneCougar.db_path` / `db_path` | file path | `tools::R_user_dir("fortuneCougar", "data")/fortuneCougar.sqlite` |
+| `fortuneCougar.demo` / `demo` | `TRUE`, `FALSE` | `FALSE`; demo players ("Lucky Cougar" + a community) and scripted seeds, see `R/fct_demo.R` |
 
 ## Package structure
 

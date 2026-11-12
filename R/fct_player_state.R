@@ -487,7 +487,10 @@ player_state <- function(session = shiny::getDefaultReactiveDomain(), store = fc
          dash = rv$dash, dash_claimed = as.list(rv$dash_claimed),
          monster = rv$monster, monster_claimed = as.list(rv$monster_claimed),
          stats = rv$stats, game_meta = rv$game_meta, recent_pulls = as.list(rv$recent_pulls),
-         name = rv$name, track = track_snapshot(rv$track))
+         name = rv$name, track = track_snapshot(rv$track),
+         # the play session in progress: a browser-saved profile cannot be saved once the
+         # browser is gone, so the next visit closes this session (see restore())
+         open_session = ident$session)
   }
 
   self$restore <- function(x) {
@@ -527,6 +530,15 @@ player_state <- function(session = shiny::getDefaultReactiveDomain(), store = fc
       nm <- chr(x$name)
       rv$name <- if (length(nm) == 1 && fc_valid_name(nm)) nm else ""
       rv$track <- track_restore(x$track)
+      # a session that was still open when the profile was last saved
+      os <- x$open_session
+      if (is.list(os) && !is.null(os$t0)) {
+        tk <- rv$track
+        t0 <- num(os$t0); end <- max(t0, num(tk$last_t))
+        plays <- max(0, tk$n - num(os$plays))
+        if (plays > 0 || end - t0 >= 30)
+          rv$track <- track_add_session(tk, t0, end - t0, plays, num(os$balance), rv$coins)
+      }
     })
     TRUE
   }

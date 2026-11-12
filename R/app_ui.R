@@ -39,6 +39,8 @@ fc_app_ui <- function(request) {
         tags$link(rel = "preconnect", href = "https://fonts.googleapis.com"),
         tags$link(rel = "stylesheet",
                   href = "https://fonts.googleapis.com/css2?family=Bungee&family=Poppins:wght@400;600;800&display=swap"),
+        # extra stylesheets (the browser build ships its precompiled theme here)
+        lapply(getOption("fortuneCougar.extra_css", character(0)), function(h) tags$link(rel = "stylesheet", href = h)),
         tags$link(rel = "stylesheet", href = "fc-assets/casino.css"),
         tags$script(HTML(sprintf("window.FC_LANG = '%s'; window.FC_I18N = %s;", lang,
                                  jsonlite::toJSON(fc_js_i18n(lang), auto_unbox = TRUE)))),

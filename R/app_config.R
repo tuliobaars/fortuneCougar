@@ -4,10 +4,11 @@
 #   options(
 #     fortuneCougar.lang    = "en" | "pt_BR",        # default language
 #     fortuneCougar.storage = "sqlite" | "browser",  # where progress is saved
-#     fortuneCougar.db_path = "path/to/fortuneCougar.sqlite"
+#     fortuneCougar.db_path = "path/to/fortuneCougar.sqlite",
+#     fortuneCougar.demo    = FALSE                   # demo players + scripted seeds
 #   )
 #
-# run_app(lang =, storage =, db_path =) sets the same options.
+# run_app(lang =, storage =, db_path =, demo =) sets the same options.
 # ---------------------------------------------------------------------------
 
 fc_storage_backend <- function() {

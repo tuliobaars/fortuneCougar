@@ -187,7 +187,7 @@ stats_server <- function(id, player) {
       if (is.null(cl))
         return(div(class = "stats-empty",
                    tr("k-means clustering starts when %d players have played %d+ rounds (now: %d).", 8L, STAT_MIN_PLAYS, n)))
-      me <- match(player$id(), cl$player_id)
+      me <- match(player$id() %||% NA_character_, cl$player_id)
       mine <- if (!is.na(me)) cl$cluster[me] else NA
       div(class = "community",
           p(class = "muted", tr("k-means on %d players, %d clusters (%s of the variance between clusters).",

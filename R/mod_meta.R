@@ -132,6 +132,8 @@ wheel_ui <- function(id) {
       div(class = "rules-line", uiOutput(ns("vip_note"))))
 }
 
+WHEEL_SPIN_SECS <- 4.3      # the SVG wheel's spin (data-duration 4200 ms + margin)
+
 wheel_server <- function(id, player) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -153,19 +155,24 @@ wheel_server <- function(id, player) {
           span(class = paste("mult-chip", if (!is.null(r) && r$mult == WHEEL_MULTS$mult[i]) "hit"), paste0("x", WHEEL_MULTS$mult[i])))))
     })
     status <- reactive({ invalidateLater(1000); player$wheel_status() })
+    # the prize text waits for the wheel to stop (it re-renders every second)
+    won_style <- function(r) {
+      wait <- WHEEL_SPIN_SECS - (now_secs() - (r$at %||% 0))
+      if (wait > 0) sprintf("animation-delay:%.2fs", wait) else "animation:none"
+    }
     output$hourly_btn <- renderUI({
       s <- status()
       if (s$hourly_ready) tags$button(type = "button", class = "btn-deal pulse",
                                       onclick = js_set(ns("spin_hourly"), "Math.random()"), tr("SPIN FREE!"))
       else div(class = "wheel-wait", span(tr("Next spin in")), strong(fmt_duration(s$hourly_wait)),
-               if (!is.null(last$hourly)) div(class = "wheel-won", tr("Won %s", fmt_coins(last$hourly$total))))
+               if (!is.null(last$hourly)) div(class = "wheel-won", style = won_style(last$hourly), tr("Won %s", fmt_coins(last$hourly$total))))
     })
     output$daily_btn <- renderUI({
       s <- status()
       if (s$daily_ready) tags$button(type = "button", class = "btn-deal pulse gold",
                                      onclick = js_set(ns("spin_daily"), "Math.random()"), tr("SPIN DAILY BONUS!"))
       else div(class = "wheel-wait", span(tr("Daily bonus resets in")), strong(fmt_duration(s$daily_wait)),
-               if (!is.null(last$daily)) div(class = "wheel-won", sprintf("%s \u00D7 %d = %s", fmt_coins(last$daily$base), as.integer(last$daily$mult), fmt_coins(last$daily$total))))
+               if (!is.null(last$daily)) div(class = "wheel-won", style = won_style(last$daily), sprintf("%s \u00D7 %d = %s", fmt_coins(last$daily$base), as.integer(last$daily$mult), fmt_coins(last$daily$total))))
     })
     output$vip_note <- renderUI({
       v <- player$vip()
@@ -173,13 +180,17 @@ wheel_server <- function(id, player) {
                                               tr(v$tier), as.integer(round(100 * VIP_TIERS$wheel_bonus[v$index])))))
     })
     observeEvent(input$spin_hourly, {
+      session$sendCustomMessage("fc_busy", list(ms = WHEEL_SPIN_SECS * 1000))   # HUD counts up when the wheel stops
       r <- player$spin_wheel(daily = FALSE); req(r)
+      r$at <- now_secs()
       last$hourly <- r
       player$celebrate("win", r$total, tr("WHEEL OF FUN!"), if (r$vip_bonus > 0) tr("incl. +%d%% VIP bonus", as.integer(round(100 * r$vip_bonus))) else "", delay = 4300)
       player$record("side", "wheel", NULL, wager = 0, win = r$total, bet = 1)
     })
     observeEvent(input$spin_daily, {
+      session$sendCustomMessage("fc_busy", list(ms = WHEEL_SPIN_SECS * 1000))
       r <- player$spin_wheel(daily = TRUE); req(r)
+      r$at <- now_secs()
       last$daily <- r
       player$celebrate("mega", r$total, tr("DAILY BONUS!"), tr("%s x%d multiplier", fmt_coins(r$base), as.integer(r$mult)), delay = 4300)
       player$award_pack(r$pack, "Daily Bonus Wheel")

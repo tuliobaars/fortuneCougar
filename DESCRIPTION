@@ -12,7 +12,8 @@ Description: A modular R Shiny social-casino app (play money only): 22 feature
     one reactive player session. Progress and the linked jackpots persist in an
     SQLite database; the interface is available in English and Brazilian
     Portuguese.
-License: MIT + file LICENSE
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Imports:

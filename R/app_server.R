@@ -18,6 +18,15 @@ fc_app_server <- function(input, output, session) {
   # Linked progressive jackpot pools, shared by every session on this server
   linked <- linked_jackpots(store)
 
+  # Demo mode (run_app(demo = TRUE)): demo players, and scripted randomness
+  if (fc_demo_enabled()) {
+    fc_demo_seed(store)
+    observeEvent(input[["__seed"]], {
+      seed <- fc_demo_seed_value(input[["__seed"]])
+      if (!is.null(seed)) set.seed(seed)
+    })
+  }
+
   hud_server("hud", player)
   lobby_server("lobby", player, linked)
   classic_slots_server("classic", player, linked)

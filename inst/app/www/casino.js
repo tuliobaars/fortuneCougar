@@ -416,6 +416,12 @@
       setTimeout(function () { toast(m); }, Math.min(wait, 2500));
     });
     Shiny.addCustomMessageHandler('fc_celebrate', function (m) { setTimeout(function () { celebrate(m); }, T(m.delay || 0, (m.delay || 0) * 0.45)); });
+    // hold HUD updates while an animation shows the outcome (e.g. the prize wheels)
+    Shiny.addCustomMessageHandler('fc_busy', function (m) {
+      var ms = T(m.ms, Math.round(m.ms * 0.45));
+      markBusy(ms);
+      setTimeout(function () { if (Date.now() >= FC.busyUntil - 10) releaseBusy(); }, ms + 60);
+    });
     Shiny.addCustomMessageHandler('fc_save', function (m) { try { localStorage.setItem(SAVE_KEY, m.data); } catch (e) {} });
     Shiny.addCustomMessageHandler('fc_set_id', function (m) { try { localStorage.setItem(ID_KEY, m.id); } catch (e) {} });
     Shiny.addCustomMessageHandler('fc_spin', function (m) { FC.queue = FC.queue.then(function () { return playSpin(m); }); });
@@ -492,6 +498,46 @@
     return true;
   }
   if (!hookNameModal()) document.addEventListener('DOMContentLoaded', hookNameModal);
+
+  // ---- scroll-lock safety net -------------------------------------------------
+  // Bootstrap locks page scrolling while a modal is open (body.modal-open +
+  // inline overflow/padding). If a modal is replaced or removed in an unusual
+  // order the lock can outlive the modal; release it whenever no modal is
+  // actually open.
+  FC.unlockScroll = function () {
+    if (document.querySelector('.modal.show')) return false;
+    var b = document.body, locked = b.classList.contains('modal-open') || b.style.overflow === 'hidden';
+    b.classList.remove('modal-open');
+    b.style.removeProperty('overflow'); b.style.removeProperty('padding-right');
+    b.removeAttribute('data-bs-overflow'); b.removeAttribute('data-bs-padding-right');
+    $$('.modal-backdrop').forEach(function (el) { el.parentNode.removeChild(el); });
+    return locked;
+  };
+  function hookScrollGuard() {
+    if (!window.jQuery) return false;
+    var later = function () { setTimeout(FC.unlockScroll, 60); };
+    jQuery(document).on('hidden.bs.modal shown.bs.tab', later);
+    // Bootstrap 5.3 opens the dropdown of a nav menu when one of its tabs is
+    // shown from code (nav_select(), e.g. the header name -> My Stats): close it.
+    jQuery(document).on('shown.bs.tab', function () {
+      setTimeout(function () {
+        $$('.navbar .dropdown-menu.show').forEach(function (m) {
+          var t = m.parentNode && m.parentNode.querySelector('.dropdown-toggle');
+          try { if (t && window.bootstrap && bootstrap.Dropdown.getInstance(t)) bootstrap.Dropdown.getInstance(t).hide(); } catch (e) {}
+          m.classList.remove('show');
+          if (t) t.setAttribute('aria-expanded', 'false');
+        });
+        $$('.navbar .nav-item.dropdown[aria-expanded="true"]').forEach(function (d) { d.setAttribute('aria-expanded', 'false'); });
+      }, 0);
+    });
+    // last resort: a wheel / touch / key scroll attempt on a locked page with no modal
+    var check = function () { if (document.body.style.overflow === 'hidden' && !document.querySelector('.modal.show')) FC.unlockScroll(); };
+    window.addEventListener('wheel', check, { passive: true });
+    window.addEventListener('touchstart', check, { passive: true });
+    window.addEventListener('keydown', check);
+    return true;
+  }
+  if (!hookScrollGuard()) document.addEventListener('DOMContentLoaded', hookScrollGuard);
 
   document.addEventListener('DOMContentLoaded', function () {
     syncTurbo();

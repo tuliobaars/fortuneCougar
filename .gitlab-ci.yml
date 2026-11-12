@@ -1,0 +1,13 @@
+# GitLab Pages (free): builds the Shinylive site and publishes it at
+# https://<user>.gitlab.io/<project>/ . See DEPLOY.md.
+pages:
+  image: rocker/r-ver:4.4.2
+  script:
+    - apt-get update && apt-get install -y --no-install-recommends libarchive-dev libcurl4-openssl-dev libssl-dev
+    - Rscript --no-init-file -e 'install.packages(c("shinylive", "shiny", "bslib"))'
+    - Rscript --no-init-file tools/build_site.R public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

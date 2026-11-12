@@ -11,4 +11,14 @@
 ^\.Rhistory$
 ^\.Rprofile$
 ^\.DS_Store$
-^LICENSE\.md$
+^media$
+^_site$
+^\.github$
+^Dockerfile$
+^\.dockerignore$
+^\.rscignore$
+^DEPLOY\.md$
+^\.gitlab-ci\.yml$
+^render\.yaml$
+^docs$
+^public$

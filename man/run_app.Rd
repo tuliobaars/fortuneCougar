@@ -8,6 +8,7 @@ run_app(
   lang = getOption("fortuneCougar.lang", "en"),
   storage = getOption("fortuneCougar.storage", NULL),
   db_path = getOption("fortuneCougar.db_path", NULL),
+  demo = getOption("fortuneCougar.demo", FALSE),
   ...
 )
 }
@@ -23,6 +24,11 @@ RSQLite is installed), \code{"browser"} (the browser's localStorage) or
 \item{db_path}{Path of the SQLite database file. Defaults to a file in
 \code{tools::R_user_dir("fortuneCougar", "data")}.}
 
+\item{demo}{Demo mode: adds a returning demo player ("Lucky Cougar", with a
+rich play history) and a community of players to the storage, and lets a
+scripted demo pin random outcomes with the \verb{__seed} input. Used to film
+the promo videos. Off by default.}
+
 \item{...}{Arguments passed on to \code{\link[shiny:shinyApp]{shiny::shinyApp()}}, e.g. \code{options}.}
 }
 \value{
@@ -36,5 +42,6 @@ Launches the Shiny app bundled with the package.
 if (interactive()) {
   run_app()
   run_app(lang = "pt_BR", db_path = tempfile(fileext = ".sqlite"))
+  run_app(storage = "memory", demo = TRUE)   # type "Lucky Cougar" as the name
 }
 }

@@ -639,6 +639,8 @@ button.lucky-card:hover { transform: translateY(-6px) rotate(-2deg); box-shadow:
 .wheel-card { text-align: center; background: var(--fc-panel); border-radius: 1.5rem; padding: 1.2rem; border: 1px solid rgba(255,255,255,.1); }
 .wheel-card.daily { background: radial-gradient(circle at 50% 0%, rgba(255, 204, 0, .22), transparent 60%), var(--fc-panel); border-color: rgba(255,204,0,.4); }
 .wc-title { font-family: var(--display); color: #ffe8a3; margin-bottom: .4rem; }
+.wheel-won { animation: wonIn .45s ease both; }
+@keyframes wonIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .wheel-wait { display: flex; flex-direction: column; gap: .1rem; margin-top: .6rem; color: var(--fc-muted); }
 .wheel-wait strong { font-family: var(--display); font-size: 1.5rem; color: #fff; font-weight: 400; }
 .wheel-won { color: var(--fc-gold); font-weight: 800; }

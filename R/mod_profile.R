@@ -12,7 +12,11 @@
 # coins are play money.
 # ---------------------------------------------------------------------------
 
-name_modal <- function(ns, mode = "welcome", server_side = TRUE, value = "", error = NULL) {
+# The dialog is shown once and never re-shown: validation errors are rendered
+# into it (output "error"). Re-showing an open Bootstrap modal leaves the page
+# scroll-locked (the second modal saves the locked `overflow: hidden` of the
+# first one as the page's "original" style and restores it on close).
+name_modal <- function(ns, mode = "welcome", server_side = TRUE, value = "") {
   welcome <- identical(mode, "welcome")
   modalDialog(
     title = if (welcome) paste("\U0001F406", tr("Welcome to fortuneCougar!"))
@@ -24,7 +28,7 @@ name_modal <- function(ns, mode = "welcome", server_side = TRUE, value = "", err
         if (server_side && welcome) p(class = "fc-name-hint", tr("Played here before? Type the same name to continue where you left off.")),
         textInput(ns("name"), tr("Player name"), value = value, placeholder = tr("e.g. LuckyCougar"), width = "100%"),
         div(class = "fc-name-rules", tr("2-20 characters: letters, digits, spaces, dots, dashes or underscores.")),
-        if (!is.null(error)) div(class = "fc-name-error", role = "alert", error)),
+        uiOutput(ns("error"))),
     footer = tagList(
       if (!welcome) modalButton(tr("Cancel")),
       actionButton(ns("ok"), if (welcome) tr("Start playing") else tr("Continue"), class = "btn-deal fc-name-ok")),
@@ -36,25 +40,34 @@ profile_server <- function(id, player) {
     ns <- session$ns
     store <- player$store
     mode <- reactiveVal("welcome")
+    error <- reactiveVal(NULL)
 
-    show <- function(m, value = "", error = NULL) {
+    show <- function(m) {
       mode(m)
-      showModal(name_modal(ns, m, store$server_side, value, error))
+      error(NULL)
+      showModal(name_modal(ns, m, store$server_side))
     }
+    # errors appear inside the open dialog (a nonce re-triggers the animation)
+    fail <- function(msg) error(list(msg = msg, n = stats::runif(1)))
+    output$error <- renderUI({
+      e <- error()
+      if (is.null(e)) return(NULL)
+      div(class = "fc-name-error", role = "alert", `data-n` = e$n, e$msg)
+    })
     observeEvent(player$rv$ask_name, show(player$rv$ask_name$mode))
 
     observeEvent(input$ok, {
       name <- fc_clean_name(input$name %||% "")
       m <- isolate(mode())
       if (!fc_valid_name(name)) {
-        show(m, name, tr("Please use 2-20 letters or digits (spaces, dots, dashes and underscores are allowed)."))
+        fail(tr("Please use 2-20 letters or digits (spaces, dots, dashes and underscores are allowed)."))
         return()
       }
       me <- player$id()
       other <- if (store$server_side) store$find_player_by_name(name) else NULL
       same <- identical(tolower(name), tolower(player$name()))
       if (!is.null(other) && !identical(other, me) && is.null(store$load_player(other))) {
-        show(m, name, tr("This name is not available. Please choose another one."))
+        fail(tr("This name is not available. Please choose another one."))
         return()
       }
       removeModal()

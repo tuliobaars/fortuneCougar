@@ -125,3 +125,25 @@ test_that("short empty sessions are not logged; profiles need a name to be saved
   expect_true(p$save())
   expect_equal(store$load_player("player-empty-0001")$name, "Yan")
 })
+
+test_that("a session left open in a browser-saved profile is closed on the next visit", {
+  p <- new_test_player()
+  p$set_name("Bia")
+  p$session_begin(now = now_secs() - 300)
+  for (i in 1:4) { p$debit(100); p$record("slots", "giant", "myth", wager = 100, win = 0) }
+  snap <- shiny::isolate(p$snapshot())                 # saved during play; then the tab is closed
+  expect_false(is.null(snap$open_session))
+  json <- jsonlite::toJSON(snap, auto_unbox = TRUE, null = "null", digits = NA)
+  q <- new_test_player()
+  expect_true(q$restore(jsonlite::fromJSON(json, simplifyVector = FALSE)))
+  tk <- shiny::isolate(q$rv$track)
+  expect_length(tk$sessions, 1)
+  expect_equal(tk$sessions[[1]]$plays, 4)
+  expect_equal(tk$sessions[[1]]$end_balance - tk$sessions[[1]]$start_balance, -400)
+  # a session closed properly is not counted twice
+  p$session_end()
+  q2 <- new_test_player()
+  q2$restore(jsonlite::fromJSON(jsonlite::toJSON(shiny::isolate(p$snapshot()), auto_unbox = TRUE, null = "null", digits = NA),
+                                simplifyVector = FALSE))
+  expect_length(shiny::isolate(q2$rv$track$sessions), 1)
+})
