@@ -31,7 +31,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libarchive-dev libcurl4-openssl-dev libssl-dev
 
       - name: Install shinylive
-        run: Rscript --no-init-file -e 'install.packages(c("shinylive", "shiny", "bslib"))'
+        run: Rscript --no-init-file -e 'install.packages(c("shinylive", "shiny", "bslib"), repos = "https://cloud.r-project.org")'
 
       - name: Build the static site
         # --no-init-file: skip the renv .Rprofile, the export only needs shinylive
